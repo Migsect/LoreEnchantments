@@ -1,0 +1,6 @@
+name: LoreEnchantments
+main: net.samongi.LoreEnchantments.LoreEnchantments
+version: 0.0
+description: An interface to add additional enchantments.
+author: Migsect
+depend: [SamongiLib]
