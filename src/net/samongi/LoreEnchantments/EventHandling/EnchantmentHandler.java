@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.md_5.bungee.api.ChatColor;
+import net.samongi.LoreEnchantments.LoreEnchantments;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +16,7 @@ public class EnchantmentHandler
   private final JavaPlugin plugin;
   
   private final Map<Class<?>, List<LoreEnchantment>> enchantments = new HashMap<>();
+  private final Map<LoreEnchantment, JavaPlugin> enchantment_ownership = new HashMap<>();
   
   public EnchantmentHandler(JavaPlugin plugin)
   {
@@ -30,6 +32,7 @@ public class EnchantmentHandler
   public void registerInterface(Class<?> c)
   { 
     // merely creates a new list
+    LoreEnchantments.debugLog("[HANDLER] Registered Interface '" + c.getName() + "'");
     enchantments.put(c, new ArrayList<LoreEnchantment>());
   }
   
@@ -39,13 +42,20 @@ public class EnchantmentHandler
    * 
    * @param ench The enchantment to register.
    */
-  public void registerEnchantment(LoreEnchantment ench)
+  public void registerEnchantment(LoreEnchantment ench, JavaPlugin j_plugin)
   {
+    // Attributing ownership of the enchantment to a plugin in case something goes wrong.
+    enchantment_ownership.put(ench, j_plugin);
+
+    LoreEnchantments.debugLog("[HANDLER] Registerng Enchantment '" + ench.getName() + "'");
+    
+    // Add the enchantment to all the lists under the interfaces
     for(Class<?> c : enchantments.keySet())
     {
       // Check to see if the enchantment is an instance of the class
       // if it is, add it to that class (interface)'s list.
-      if(c.isInstance(ench)) enchantments.get(c).add(ench); 
+      if(c.isAssignableFrom(ench.getClass())) enchantments.get(c).add(ench); 
+      if(c.isAssignableFrom(ench.getClass())) LoreEnchantments.debugLog("[HANDLER]   Found Interface for enchantment'" + c.getName() + "'");
     }
   }
   
@@ -68,6 +78,7 @@ public class EnchantmentHandler
   public List<LoreEnchantment> getEnchantments(Class<?> interfaze, ItemStack item)
   {
     // Getting the item's lore
+    if(item == null || item.getItemMeta() == null) return new ArrayList<LoreEnchantment>();
     List<String> lore = item.getItemMeta().getLore();
     if(lore == null) return new ArrayList<LoreEnchantment>();
     if(lore.size() == 0) return new ArrayList<LoreEnchantment>();

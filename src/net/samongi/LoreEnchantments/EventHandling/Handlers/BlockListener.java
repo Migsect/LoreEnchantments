@@ -13,6 +13,14 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
+/**BlockListener, handles catching all block related events.
+ * 
+ * @author Migsect
+ *
+ * Classes called:
+ *  - OnBlockBreak
+ *  - OnBlockDamage
+ */
 public class BlockListener implements Listener
 {
   private final EnchantmentHandler handler;
