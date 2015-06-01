@@ -17,10 +17,19 @@ public class LoreEnchantmentsAPI
   {
     this.handler = handler;
   }
+  /**Registers the named enchantment
+   * 
+   * @param ench The enchantment to be registered
+   * @param plugin The plugin registering the enchantment
+   */
   public final void registerEnchantment(LoreEnchantment ench, JavaPlugin plugin)
   {
     LoreEnchantments.debugLog("'" + plugin.getName() + "' has registered the enchantment '" + ench.getName() + "'");
     handler.registerEnchantment(ench, plugin);
+  }
+  public final void deregisterEnchantment(LoreEnchantment ench)
+  {
+    
   }
   
   /**This adds the plugin to the list for tracking purposes.

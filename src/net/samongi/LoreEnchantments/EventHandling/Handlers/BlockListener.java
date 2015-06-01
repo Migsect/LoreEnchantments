@@ -2,8 +2,9 @@ package net.samongi.LoreEnchantments.EventHandling.Handlers;
 
 import java.util.List;
 
+import net.samongi.LoreEnchantments.LoreEnchantments;
 import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler;
-import net.samongi.LoreEnchantments.EventHandling.LoreEnchantment;
+import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler.EnchantmentPackage;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockBreak;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockDamage;
 
@@ -38,11 +39,12 @@ public class BlockListener implements Listener
     ItemStack item = event.getPlayer().getItemInHand();
     if(item == null) return;
     Class<?> enchantment_interface = OnBlockBreak.class;
-    List<LoreEnchantment> enchs = handler.getEnchantments(enchantment_interface, item);
+    List<EnchantmentPackage> enchs = handler.getEnchantments(enchantment_interface, item);
     if(enchs.size() == 0) return;
-    for(LoreEnchantment e : enchs)
+    for(EnchantmentPackage e : enchs)
     {
-      ((OnBlockBreak) e).onBlockBreak(event, e.seperateData(item));
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
+      ((OnBlockBreak) e.getEnchantment()).onBlockBreak(event, e.getEnchantment(), e.getData());
     }
   }
   
@@ -54,11 +56,12 @@ public class BlockListener implements Listener
     ItemStack item = event.getPlayer().getItemInHand();
     if(item == null) return;
     Class<?> enchantment_interface = OnBlockDamage.class;
-    List<LoreEnchantment> enchs = handler.getEnchantments(enchantment_interface, item);
+    List<EnchantmentPackage> enchs = handler.getEnchantments(enchantment_interface, item);
     if(enchs.size() == 0) return;
-    for(LoreEnchantment e : enchs)
+    for(EnchantmentPackage e : enchs)
     {
-      ((OnBlockDamage) e).onBlockDamage(event, e.seperateData(item));
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockDamage' for '" + e.getEnchantment().getName() + "'");
+      ((OnBlockDamage) e.getEnchantment()).onBlockDamage(event, e.getEnchantment(), e.getData());
     }
   }
 }

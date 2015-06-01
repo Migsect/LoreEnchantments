@@ -4,7 +4,7 @@ import java.util.List;
 
 import net.samongi.LoreEnchantments.LoreEnchantments;
 import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler;
-import net.samongi.LoreEnchantments.EventHandling.LoreEnchantment;
+import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler.EnchantmentPackage;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityArrowHitEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityArrowHitPlayer;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityShootBow;
@@ -73,17 +73,16 @@ public class ArrowListener implements Listener
     event.getProjectile().setMetadata("bow", metadata);
     
     Class<?> enchantment_interface;
-    List<LoreEnchantment> enchs;
+    List<EnchantmentPackage> enchs;
     
     // Simple method just for shooting the bow.
     LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnEntityShootBow'");
     enchantment_interface = OnEntityShootBow.class;
     enchs = handler.getEnchantments(enchantment_interface, item);
-    if(enchs.size() > 0) for(LoreEnchantment e : enchs)
+    if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityShootBow' for '" + e.getName() + "'");
-      String[] data = e.seperateData(item);
-      ((OnEntityShootBow) e).onEntityShootBow(event, data);
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityShootBow' for '" + e.getEnchantment() + "'");
+      ((OnEntityShootBow) e.getEnchantment()).onEntityShootBow(event, e.getEnchantment(), e.getData());
     }
     
     // Case for player shooting bow
@@ -91,11 +90,10 @@ public class ArrowListener implements Listener
     LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnPlayerShootBow'");
     enchantment_interface = OnPlayerShootBow.class;
     enchs = handler.getEnchantments(enchantment_interface, item);
-    if(enchs.size() > 0) for(LoreEnchantment e : enchs)
+    if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerShootBow' for '" + e.getName() + "'");
-      String[] data = e.seperateData(item);
-      ((OnPlayerShootBow) e).onPlayerShootBow(event, data);
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerShootBow' for '" + e.getEnchantment() + "'");
+      ((OnPlayerShootBow) e.getEnchantment()).onPlayerShootBow(event, e.getEnchantment(), e.getData());
     }
   }
   
@@ -123,16 +121,15 @@ public class ArrowListener implements Listener
     LoreEnchantments.debugLog("[ArrowListener] Found 'Bow' MetaData on Arrow - Bow Name: '" + bow.getItemMeta().getDisplayName() + "', Bow Durability: " + bow.getDurability());
   	
   	Class<?> enchantment_interface;
-    List<LoreEnchantment> enchs;
+    List<EnchantmentPackage> enchs;
 
     LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnEntityArrowHitEntity'");
   	enchantment_interface = OnEntityArrowHitEntity.class;
     enchs = handler.getEnchantments(enchantment_interface, bow);
-    if(enchs.size() > 0) for(LoreEnchantment e : enchs)
+    if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityArrowHitEntity' for '" + e.getName() + "'");
-      String[] data = e.seperateData(bow);
-      ((OnEntityArrowHitEntity) e).onEntityArrowHitEntity(event, data);
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityArrowHitEntity' for '" + e.getEnchantment().getName() + "'");
+      ((OnEntityArrowHitEntity) e.getEnchantment()).onEntityArrowHitEntity(event, e.getEnchantment(), e.getData());
     }
     
     if(event.getEntity() instanceof Player)
@@ -140,11 +137,10 @@ public class ArrowListener implements Listener
       LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnEntityArrowHitPlayer'");
     	enchantment_interface = OnEntityArrowHitPlayer.class;
       enchs = handler.getEnchantments(enchantment_interface, bow);
-      if(enchs.size() > 0) for(LoreEnchantment e : enchs)
+      if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
       {
-        LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityArrowHitPlayer' for '" + e.getName() + "'");
-        String[] data = e.seperateData(bow);
-        ((OnEntityArrowHitPlayer) e).onEntityArrowHitPlayer(event, data);
+        LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityArrowHitPlayer' for '" + e.getEnchantment().getName() + "'");
+        ((OnEntityArrowHitPlayer) e.getEnchantment()).onEntityArrowHitPlayer(event, e.getEnchantment(), e.getData());
       }
     }
     
@@ -154,11 +150,10 @@ public class ArrowListener implements Listener
     LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnPlayerArrowHitEntity'");
     enchantment_interface = OnPlayerArrowHitEntity.class;
     enchs = handler.getEnchantments(enchantment_interface, bow);
-    if(enchs.size() > 0) for(LoreEnchantment e : enchs)
+    if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerArrowHitEntity' for '" + e.getName() + "'");
-      String[] data = e.seperateData(bow);
-      ((OnPlayerArrowHitEntity) e).onPlayerArrowHitEntity(event, data);
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerArrowHitEntity' for '" + e.getEnchantment().getName() + "'");
+      ((OnPlayerArrowHitEntity) e.getEnchantment()).onPlayerArrowHitEntity(event, e.getEnchantment(), e.getData());
     }
     
     // If the shooter is a player and the hit is a player
@@ -167,11 +162,10 @@ public class ArrowListener implements Listener
       LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnPlayerArrowHitPlayer'");
     	enchantment_interface = OnPlayerArrowHitPlayer.class;
       enchs = handler.getEnchantments(enchantment_interface, bow);
-      if(enchs.size() > 0) for(LoreEnchantment e : enchs)
+      if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
       {
-        LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerArrowHitPlayer' for '" + e.getName() + "'");
-        String[] data = e.seperateData(bow);
-        ((OnPlayerArrowHitPlayer) e).onPlayerArrowHitPlayer(event, data);
+        LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerArrowHitPlayer' for '" + e.getEnchantment().getName() + "'");
+        ((OnPlayerArrowHitPlayer) e.getEnchantment()).onPlayerArrowHitPlayer(event, e.getEnchantment(), e.getData());
       }
     }
   }

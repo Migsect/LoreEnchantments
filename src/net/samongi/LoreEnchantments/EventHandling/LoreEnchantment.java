@@ -3,17 +3,19 @@ package net.samongi.LoreEnchantments.EventHandling;
 import java.util.List;
 
 import net.md_5.bungee.api.ChatColor;
-import net.samongi.LoreEnchantments.LoreEnchantments;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class LoreEnchantment
 {
   private final String name;
+  private final JavaPlugin owning_plugin;
   
-  protected LoreEnchantment(String name)
+  protected LoreEnchantment(String name, JavaPlugin owning_plugin)
   {
     this.name = name;
+    this.owning_plugin = owning_plugin;
   }
   
   /**Gets the name of the enchantment
@@ -23,11 +25,12 @@ public class LoreEnchantment
    */
   public final String getName(){return this.name;}
   
+  /*
   /**Will seperate the data from the item's lore and return it as an array.
    * 
    * @param item The item to seperate the data from
    * @return The enchantment data as a string array.  Null if item happened to not have the enchantment.
-   */
+   
   public final String[] seperateData(ItemStack item)
   {
     LoreEnchantments.debugLog("Seperating Data from '" + item.getItemMeta().getDisplayName() + "'");
@@ -50,6 +53,7 @@ public class LoreEnchantment
     }
     return null;
   }
+  */
   
   /**Checks to see if the item has the LoreEnchantment
    * 
@@ -62,13 +66,25 @@ public class LoreEnchantment
     if(lore == null) return false;
     if(lore.size() == 0) return false;
     String expected_head = this.getName().toLowerCase();
-    for(String line : lore)
-    {
-      if(ChatColor.stripColor(line).toLowerCase().startsWith(expected_head))
-      {
-        return true;
-      }  
-    }
+    for(String line : lore) if(ChatColor.stripColor(line).toLowerCase().startsWith(expected_head)) return true;
     return false;
+  }
+  
+  /**Returns the plugin that owns this enchantment.
+   * 
+   * @return The plugin that owns this enchantment
+   */
+  public final JavaPlugin getOwningPlugin(){return this.owning_plugin;}
+
+  public boolean equals(Object other)
+  {
+    if(other == null) return false;
+    if(!(other instanceof LoreEnchantment)) return false;
+    if(((LoreEnchantment)other).name == this.name && ((LoreEnchantment)other).owning_plugin == this.owning_plugin) return true;
+    return false;
+  }
+  public int hashCode()
+  {
+    return this.name.hashCode() + this.owning_plugin.hashCode();
   }
 }
