@@ -1,6 +1,6 @@
-package net.samongi.LoreEnchantments.Utilities;
+package net.samongi.LoreEnchantments.Util;
 
-public class StringUtilities
+public class StringUtil
 {
   /**Returns the int value of the input numeral.
    *    

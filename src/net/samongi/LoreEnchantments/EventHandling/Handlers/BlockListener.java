@@ -43,6 +43,7 @@ public class BlockListener implements Listener
     if(enchs.size() == 0) return;
     for(EnchantmentPackage e : enchs)
     {
+      if(event.isCancelled()) break;
       LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
       ((OnBlockBreak) e.getEnchantment()).onBlockBreak(event, e.getEnchantment(), e.getData());
     }
@@ -60,6 +61,7 @@ public class BlockListener implements Listener
     if(enchs.size() == 0) return;
     for(EnchantmentPackage e : enchs)
     {
+      if(event.isCancelled()) break;
       LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockDamage' for '" + e.getEnchantment().getName() + "'");
       ((OnBlockDamage) e.getEnchantment()).onBlockDamage(event, e.getEnchantment(), e.getData());
     }

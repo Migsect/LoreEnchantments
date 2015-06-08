@@ -5,6 +5,7 @@ import java.util.List;
 import net.samongi.LoreEnchantments.LoreEnchantments;
 import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler;
 import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler.EnchantmentPackage;
+import net.samongi.LoreEnchantments.Interfaces.OnBlockArrowHit;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityArrowHitEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityArrowHitPlayer;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityShootBow;
@@ -12,17 +13,21 @@ import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitPlayer;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerShootBow;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.util.Vector;
 
 /**ArrowListener, handles catching all arrow related events.
  * 
@@ -56,6 +61,50 @@ public class ArrowListener implements Listener
   }
   
   @EventHandler
+  public void onArrowHitBlock(ProjectileHitEvent event)
+  {
+    // Check to see if arrow
+    if(event.getEntityType().equals(EntityType.ARROW)) return;
+    LoreEnchantments.debugLog("[ArrowListener] Heard ProjectileHitEvent");
+    
+    Arrow arrow = (Arrow) event.getEntity();
+    LoreEnchantments.debugLog("[ArrowListener] Does the arrow have the 'bow' metadata?: " + arrow.hasMetadata("bow"));
+    
+    // Check to see if arrow is in block (complexities time)
+    Location location = arrow.getLocation();
+    Vector direction = location.getDirection();
+    // getting the direction and simply displacing it in the direction the arrow is facing.
+    Location loc = new Location(location.getWorld(), location.getX() + direction.getX(), location.getY() + direction.getY(), location.getZ() + direction.getZ());
+    if(loc.getBlock().getType().equals(Material.AIR)) return;
+    
+    List<MetadataValue> values = event.getEntity().getMetadata("bow");
+    LoreEnchantments.debugLog("[ArrowListener] Found " + values.size() + " MetadataValues");
+    ItemStack bow = null;
+    for(MetadataValue v : values)
+    {
+      if(!(v.value() instanceof ItemStack)) continue;
+      bow = (ItemStack)v.value();
+      break;
+    }
+    if(bow == null) LoreEnchantments.debugLog("[ArrowListener] Found no bow MetaTag, null returning.");
+    if(bow == null) return;
+    LoreEnchantments.debugLog("[ArrowListener] Found 'Bow' MetaData on Arrow - Bow Name: '" + bow.getItemMeta().getDisplayName() + "', Bow Durability: " + bow.getDurability());
+    
+    Class<?> enchantment_interface;
+    List<EnchantmentPackage> enchs;
+    
+    // Simple method just for shooting the bow.
+    LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnEntityShootBow'");
+    enchantment_interface = OnBlockArrowHit.class;
+    enchs = handler.getEnchantments(enchantment_interface, bow);
+    if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
+    {
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityShootBow' for '" + e.getEnchantment() + "'");
+      ((OnBlockArrowHit) e.getEnchantment()).onBlockArrowHit(event, e.getEnchantment(), e.getData());
+    }
+  }
+  
+  @EventHandler
   public void onEntityShootBow(EntityShootBowEvent event)
   {
     if(event.isCancelled()) return;
@@ -81,6 +130,7 @@ public class ArrowListener implements Listener
     enchs = handler.getEnchantments(enchantment_interface, item);
     if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
+      if(event.isCancelled()) break;
       LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityShootBow' for '" + e.getEnchantment() + "'");
       ((OnEntityShootBow) e.getEnchantment()).onEntityShootBow(event, e.getEnchantment(), e.getData());
     }
@@ -92,6 +142,7 @@ public class ArrowListener implements Listener
     enchs = handler.getEnchantments(enchantment_interface, item);
     if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
+      if(event.isCancelled()) break;
       LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerShootBow' for '" + e.getEnchantment() + "'");
       ((OnPlayerShootBow) e.getEnchantment()).onPlayerShootBow(event, e.getEnchantment(), e.getData());
     }
@@ -128,6 +179,7 @@ public class ArrowListener implements Listener
     enchs = handler.getEnchantments(enchantment_interface, bow);
     if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
+      if(event.isCancelled()) break;
       LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityArrowHitEntity' for '" + e.getEnchantment().getName() + "'");
       ((OnEntityArrowHitEntity) e.getEnchantment()).onEntityArrowHitEntity(event, e.getEnchantment(), e.getData());
     }
@@ -139,6 +191,7 @@ public class ArrowListener implements Listener
       enchs = handler.getEnchantments(enchantment_interface, bow);
       if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
       {
+        if(event.isCancelled()) break;
         LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityArrowHitPlayer' for '" + e.getEnchantment().getName() + "'");
         ((OnEntityArrowHitPlayer) e.getEnchantment()).onEntityArrowHitPlayer(event, e.getEnchantment(), e.getData());
       }
@@ -164,6 +217,7 @@ public class ArrowListener implements Listener
       enchs = handler.getEnchantments(enchantment_interface, bow);
       if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
       {
+        if(event.isCancelled()) break;
         LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerArrowHitPlayer' for '" + e.getEnchantment().getName() + "'");
         ((OnPlayerArrowHitPlayer) e.getEnchantment()).onPlayerArrowHitPlayer(event, e.getEnchantment(), e.getData());
       }

@@ -6,6 +6,7 @@ import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.ArrowListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.BlockListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.EntityListener;
+import net.samongi.LoreEnchantments.EventHandling.Handlers.ItemListener;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockArrowHit;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockBreak;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockDamage;
@@ -19,13 +20,16 @@ import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitPlayer;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerDamageEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerDamagePlayer;
-import net.samongi.LoreEnchantments.Interfaces.OnPlayerDrop;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerDropItem;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerInteract;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerInteractEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerItemConsume;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerItemHeld;
-import net.samongi.LoreEnchantments.Interfaces.OnPlayerPickup;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerPickupItem;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerShootBow;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerSneak;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerSprint;
+import net.samongi.LoreEnchantments.Interfaces.OnServerTick;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -64,19 +68,23 @@ public class LoreEnchantments extends JavaPlugin
     handler.registerInterface(OnPlayerArrowHitPlayer.class);
     handler.registerInterface(OnPlayerDamageEntity.class);
     handler.registerInterface(OnPlayerDamagePlayer.class);
-    handler.registerInterface(OnPlayerDrop.class);
+    handler.registerInterface(OnPlayerDropItem.class);
     handler.registerInterface(OnPlayerInteract.class);
     handler.registerInterface(OnPlayerInteractEntity.class);
     handler.registerInterface(OnPlayerItemConsume.class);
     handler.registerInterface(OnPlayerItemHeld.class);
-    handler.registerInterface(OnPlayerPickup.class);
+    handler.registerInterface(OnPlayerPickupItem.class);
     handler.registerInterface(OnPlayerShootBow.class);
+    handler.registerInterface(OnPlayerSneak.class);
+    handler.registerInterface(OnPlayerSprint.class);
+    handler.registerInterface(OnServerTick.class);
     
     // Listener Registering
     PluginManager pm = this.getServer().getPluginManager();
     pm.registerEvents(new BlockListener(handler), this);
     pm.registerEvents(new ArrowListener(handler), this);
     pm.registerEvents(new EntityListener(handler), this);
+    pm.registerEvents(new ItemListener(handler), this);
    
   }
   

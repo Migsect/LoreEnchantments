@@ -49,7 +49,8 @@ public class EntityListener implements Listener
     if(enchs.size() == 0) return;
     for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
+      if(event.isCancelled()) break;
+      LoreEnchantments.debugLog("[EntityListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
       ((OnEntityDamageEntity) e.getEnchantment()).onEntityDamageEntity(event, e.getEnchantment(), e.getData());
     }
     
@@ -60,7 +61,8 @@ public class EntityListener implements Listener
     if(enchs.size() == 0) return;
     for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
+      if(event.isCancelled()) break;
+      LoreEnchantments.debugLog("[EntityListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
       ((OnPlayerDamageEntity) e.getEnchantment()).onPlayerDamageEntity(event, e.getEnchantment(), e.getData());
     }
     
@@ -71,7 +73,8 @@ public class EntityListener implements Listener
     if(enchs.size() == 0) return;
     for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
+      if(event.isCancelled()) break;
+      LoreEnchantments.debugLog("[EntityListener] Calling Method 'onBlockBreak' for '" + e.getEnchantment().getName() + "'");
       ((OnPlayerDamagePlayer) e.getEnchantment()).onPlayerDamagePlayer(event, e.getEnchantment(), e.getData());
     }
   }
