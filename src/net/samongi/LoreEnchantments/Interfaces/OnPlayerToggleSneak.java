@@ -4,7 +4,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 import net.samongi.LoreEnchantments.EventHandling.LoreEnchantment;
 
-public interface OnPlayerSneak
+public interface OnPlayerToggleSneak
 {
-  public void onPlayerSneak(PlayerToggleSneakEvent event, LoreEnchantment ench, String[] data);
+  public void onPlayerToggleSneak(PlayerToggleSneakEvent event, LoreEnchantment ench, String[] data);
 }

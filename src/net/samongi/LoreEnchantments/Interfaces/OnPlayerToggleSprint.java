@@ -4,7 +4,7 @@ import net.samongi.LoreEnchantments.EventHandling.LoreEnchantment;
 
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 
-public interface OnPlayerSprint
+public interface OnPlayerToggleSprint
 {
-  public void onPlayerSneak(PlayerToggleSprintEvent event, LoreEnchantment ench, String[] data);
+  public void onPlayerToggleSprint(PlayerToggleSprintEvent event, LoreEnchantment ench, String[] data);
 }

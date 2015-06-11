@@ -7,6 +7,7 @@ import net.samongi.LoreEnchantments.EventHandling.Handlers.ArrowListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.BlockListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.EntityListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.ItemListener;
+import net.samongi.LoreEnchantments.EventHandling.Handlers.PlayerListener;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockArrowHit;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockBreak;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockDamage;
@@ -25,10 +26,14 @@ import net.samongi.LoreEnchantments.Interfaces.OnPlayerInteract;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerInteractEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerItemConsume;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerItemHeld;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerMove;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerOpenInventory;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerPickupItem;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerShootBow;
-import net.samongi.LoreEnchantments.Interfaces.OnPlayerSneak;
-import net.samongi.LoreEnchantments.Interfaces.OnPlayerSprint;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerToggleFlight;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerToggleSneak;
+import net.samongi.LoreEnchantments.Interfaces.OnPlayerToggleSprint;
+import net.samongi.LoreEnchantments.Interfaces.OnServerArrowTick;
 import net.samongi.LoreEnchantments.Interfaces.OnServerTick;
 
 import org.bukkit.plugin.PluginManager;
@@ -73,11 +78,15 @@ public class LoreEnchantments extends JavaPlugin
     handler.registerInterface(OnPlayerInteractEntity.class);
     handler.registerInterface(OnPlayerItemConsume.class);
     handler.registerInterface(OnPlayerItemHeld.class);
+    handler.registerInterface(OnPlayerMove.class);
+    handler.registerInterface(OnPlayerOpenInventory.class);
     handler.registerInterface(OnPlayerPickupItem.class);
     handler.registerInterface(OnPlayerShootBow.class);
-    handler.registerInterface(OnPlayerSneak.class);
-    handler.registerInterface(OnPlayerSprint.class);
+    handler.registerInterface(OnPlayerToggleFlight.class);
+    handler.registerInterface(OnPlayerToggleSneak.class);
+    handler.registerInterface(OnPlayerToggleSprint.class);
     handler.registerInterface(OnServerTick.class);
+    handler.registerInterface(OnServerArrowTick.class);
     
     // Listener Registering
     PluginManager pm = this.getServer().getPluginManager();
@@ -85,6 +94,7 @@ public class LoreEnchantments extends JavaPlugin
     pm.registerEvents(new ArrowListener(handler), this);
     pm.registerEvents(new EntityListener(handler), this);
     pm.registerEvents(new ItemListener(handler), this);
+    pm.registerEvents(new PlayerListener(handler), this);
    
   }
   

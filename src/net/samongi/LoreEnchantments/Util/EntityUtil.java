@@ -11,9 +11,10 @@ import org.bukkit.util.Vector;
 
 public class EntityUtil
 {
-  public static LivingEntity getLookedAtEntity(LivingEntity entity, double max_distance, double arc_length)
+  public static LivingEntity getLookedAtEntity(LivingEntity entity, double max_distance, double arc_length){return EntityUtil.getLookedAtEntity( entity,  0,  max_distance,  arc_length);}
+  public static LivingEntity getLookedAtEntity(LivingEntity entity, double min_distance, double max_distance, double arc_length)
   {
-    List<Entity> nearby_entities = entity.getNearbyEntities(max_distance, max_distance, max_distance);
+    List<LivingEntity> nearby_entities = EntityUtil.getNearbyLivingEntities( entity, min_distance, max_distance);
     if(nearby_entities.contains(entity)) nearby_entities.remove(entity);
     while(nearby_entities.size() > 0)
     {
@@ -54,5 +55,31 @@ public class EntityUtil
       entities.remove(e);
     }
     return closest;
+  }
+  
+  public static List<LivingEntity> getNearbyLivingEntities(Entity entity, double radius)
+  {
+    List<LivingEntity> list = new ArrayList<>();
+    for(Entity e : entity.getWorld().getEntities())
+    {
+      if(!(e instanceof LivingEntity)) continue;
+      if(e.getLocation().distanceSquared(entity.getLocation()) > radius*radius) continue;
+      if(e.equals(entity)) continue;
+      list.add((LivingEntity) e);
+    }
+    return list;
+  }
+  public static List<LivingEntity> getNearbyLivingEntities(Entity entity, double min_radius, double max_radius)
+  {
+    List<LivingEntity> list = new ArrayList<>();
+    for(Entity e : entity.getWorld().getEntities())
+    {
+      if(!(e instanceof LivingEntity)) continue;
+      if(e.getLocation().distanceSquared(entity.getLocation()) > max_radius*max_radius) continue;
+      if(e.getLocation().distanceSquared(entity.getLocation()) < min_radius*min_radius) continue;
+      if(e.equals(entity)) continue;
+      list.add((LivingEntity) e);
+    }
+    return list;
   }
 }
