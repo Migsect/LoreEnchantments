@@ -7,14 +7,17 @@ import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler;
 import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler.EnchantmentPackage;
 import net.samongi.LoreEnchantments.Interfaces.OnItemBreak;
 import net.samongi.LoreEnchantments.Interfaces.OnItemDamage;
+import net.samongi.LoreEnchantments.Interfaces.OnItemInventoryClick;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerDropItem;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerItemConsume;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerItemHeld;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerPickupItem;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -142,6 +145,25 @@ public class ItemListener implements Listener
       LoreEnchantments.debugLog("[ItemListener] Calling Method 'onItemBreak' for '" + e.getEnchantment().getName() + "'");
       ((OnItemBreak) e.getEnchantment()).onItemBreak(event, e.getEnchantment(), e.getData());
     }
+  }
+  
+  @EventHandler(priority=EventPriority.LOW)
+  public void onItemInventoryClick(InventoryClickEvent event)
+  {
+    LoreEnchantments.debugLog("[ItemListener] Heard PlayerItemBreakEvent");
+
+    ItemStack item = event.getCurrentItem();
+    if(item == null) return;
+    Class<?> enchantment_interface = OnItemInventoryClick.class;
+    List<EnchantmentPackage> enchs = handler.getEnchantments(enchantment_interface, item);
+    if(enchs.size() == 0) return;
+    for(EnchantmentPackage e : enchs)
+    {
+      LoreEnchantments.debugLog("[ItemListener] Calling Method 'onItemBreak' for '" + e.getEnchantment().getName() + "'");
+      ((OnItemInventoryClick) e.getEnchantment()).onItemInventoryClick(event, e.getEnchantment(), e.getData());
+    }
+    Player player = (Player)event.getWhoClicked();
+    player.updateInventory();
   }
   
 }

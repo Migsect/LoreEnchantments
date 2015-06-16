@@ -8,6 +8,7 @@ import net.samongi.LoreEnchantments.EventHandling.Handlers.BlockListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.EntityListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.ItemListener;
 import net.samongi.LoreEnchantments.EventHandling.Handlers.PlayerListener;
+import net.samongi.LoreEnchantments.Interfaces.OnArrowHit;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockArrowHit;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockBreak;
 import net.samongi.LoreEnchantments.Interfaces.OnBlockDamage;
@@ -17,6 +18,7 @@ import net.samongi.LoreEnchantments.Interfaces.OnEntityDamageEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityShootBow;
 import net.samongi.LoreEnchantments.Interfaces.OnItemBreak;
 import net.samongi.LoreEnchantments.Interfaces.OnItemDamage;
+import net.samongi.LoreEnchantments.Interfaces.OnItemInventoryClick;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitPlayer;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerDamageEntity;
@@ -60,6 +62,7 @@ public class LoreEnchantments extends JavaPlugin
     // Enchantment Handler
     handler = new EnchantmentHandler(this);
     // registering all the interfaces we will be 
+    handler.registerInterface(OnArrowHit.class);
     handler.registerInterface(OnBlockArrowHit.class);
     handler.registerInterface(OnBlockBreak.class);
     handler.registerInterface(OnBlockDamage.class);
@@ -69,6 +72,7 @@ public class LoreEnchantments extends JavaPlugin
     handler.registerInterface(OnEntityShootBow.class);
     handler.registerInterface(OnItemBreak.class);
     handler.registerInterface(OnItemDamage.class);
+    handler.registerInterface(OnItemInventoryClick.class);
     handler.registerInterface(OnPlayerArrowHitEntity.class);
     handler.registerInterface(OnPlayerArrowHitPlayer.class);
     handler.registerInterface(OnPlayerDamageEntity.class);
@@ -91,7 +95,7 @@ public class LoreEnchantments extends JavaPlugin
     // Listener Registering
     PluginManager pm = this.getServer().getPluginManager();
     pm.registerEvents(new BlockListener(handler), this);
-    pm.registerEvents(new ArrowListener(handler), this);
+    pm.registerEvents(new ArrowListener(this, handler), this);
     pm.registerEvents(new EntityListener(handler), this);
     pm.registerEvents(new ItemListener(handler), this);
     pm.registerEvents(new PlayerListener(handler), this);

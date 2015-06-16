@@ -5,7 +5,7 @@ import java.util.List;
 import net.samongi.LoreEnchantments.LoreEnchantments;
 import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler;
 import net.samongi.LoreEnchantments.EventHandling.EnchantmentHandler.EnchantmentPackage;
-import net.samongi.LoreEnchantments.Interfaces.OnBlockArrowHit;
+import net.samongi.LoreEnchantments.Interfaces.OnArrowHit;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityArrowHitEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityArrowHitPlayer;
 import net.samongi.LoreEnchantments.Interfaces.OnEntityShootBow;
@@ -13,6 +13,8 @@ import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitEntity;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerArrowHitPlayer;
 import net.samongi.LoreEnchantments.Interfaces.OnPlayerShootBow;
 
+import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
@@ -26,6 +28,10 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 /**ArrowListener, handles catching all arrow related events.
  * 
@@ -43,7 +49,7 @@ public class ArrowListener implements Listener
 {
   private final EnchantmentHandler handler;
   
-  public ArrowListener(EnchantmentHandler handler)
+  public ArrowListener(JavaPlugin plugin, EnchantmentHandler handler)
   {
     this.handler = handler;
   }
@@ -66,15 +72,8 @@ public class ArrowListener implements Listener
     LoreEnchantments.debugLog("[ArrowListener] Heard ProjectileHitEvent");
     
     Arrow arrow = (Arrow) event.getEntity();
-    LoreEnchantments.debugLog("[ArrowListener] Does the arrow haveq the 'bow' metadata?: " + arrow.hasMetadata("bow"));
     
-    // Check to see if arrow is in block (complexities time)
-    // Location location = arrow.getLocation();
-    // Vector direction = location.getDirection();
-    // getting the direction and simply displacing it in the direction the arrow is facing.
-    // Location loc = new Location(location.getWorld(), location.getX() + direction.getX(), location.getY() + direction.getY(), location.getZ() + direction.getZ());
-    // if(loc.getBlock().getType().equals(Material.AIR)) return;
-    
+    LoreEnchantments.debugLog("[ArrowListener] Does the arrow have the 'bow' metadata?: " + arrow.hasMetadata("bow"));
     List<MetadataValue> values = event.getEntity().getMetadata("bow");
     LoreEnchantments.debugLog("[ArrowListener] Found " + values.size() + " MetadataValues");
     ItemStack bow = null;
@@ -92,14 +91,37 @@ public class ArrowListener implements Listener
     List<EnchantmentPackage> enchs;
     
     // Simple method just for shooting the bow.
-    LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'OnEntityShootBow'");
+    LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'onArrowHit'");
+    enchantment_interface = OnArrowHit.class;
+    enchs = handler.getEnchantments(enchantment_interface, bow);
+    if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
+    {
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onArrowHit' for '" + e.getEnchantment().getName() + "'");
+      ((OnArrowHit) e.getEnchantment()).onArrowHit(event, e.getEnchantment(), e.getData());
+    }
+    
+    /*
+    //Check to see if arrow is in block (complexities time)
+    Location location = arrow.getLocation();
+    //getting the direction and simply displacing it in the direction the arrow is facing.
+    Location loc = location.toVector().add(arrow.getVelocity()).toLocation(location.getWorld());
+    LoreEnchantments.debugLog("[ArrowListener] Arrow at location: [" + location.getX() + ", " + location.getY()  + ", " + location.getZ()  + "]");
+    // if(LoreEnchantments.debug()) markLocation(this.plugin, location, Effect.COLOURED_DUST, 100);
+    // if(LoreEnchantments.debug()) markLocation(this.plugin, loc, Effect.COLOURED_DUST, 100);
+    boolean blocks_between = hasBlocksBetween(location, loc);
+    if(!blocks_between) LoreEnchantments.debugLog("[ArrowListener] Arrow found to not be in a block");
+    if(!blocks_between) return;
+    
+    // Simple method just for shooting the bow.
+    LoreEnchantments.debugLog("[ArrowListener] Getting Enchantments for 'onBlockArrowHit'");
     enchantment_interface = OnBlockArrowHit.class;
     enchs = handler.getEnchantments(enchantment_interface, bow);
     if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityShootBow' for '" + e.getEnchantment() + "'");
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onBlockArrowHit' for '" + e.getEnchantment().getName() + "'");
       ((OnBlockArrowHit) e.getEnchantment()).onBlockArrowHit(event, e.getEnchantment(), e.getData());
     }
+    */
   }
   
   @EventHandler
@@ -111,6 +133,7 @@ public class ArrowListener implements Listener
     ItemStack item = event.getBow();
     if(item == null) return;
     
+    /*
     ItemStack item_new = item.clone();
     ItemStack item_ref = item;
     LoreEnchantments.debugLog("[ArrowListener] ItemStack Hash: " + item.hashCode());
@@ -125,6 +148,7 @@ public class ArrowListener implements Listener
     LoreEnchantments.debugLog("[ArrowListener] ItemStack '==' clone: " + (item == item_new));
     LoreEnchantments.debugLog("[ArrowListener] ItemStack '==' ref: " + (item == item_ref));
     item.setDurability((short) (item.getDurability() + 1));
+    */
     
     // time to copy the item stack for the bow and tag it to the arrow being launched.
     ItemStack bow = item.clone();
@@ -144,7 +168,7 @@ public class ArrowListener implements Listener
     if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
       if(event.isCancelled()) break;
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityShootBow' for '" + e.getEnchantment() + "'");
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onEntityShootBow' for '" + e.getEnchantment().getName() + "'");
       ((OnEntityShootBow) e.getEnchantment()).onEntityShootBow(event, e.getEnchantment(), e.getData());
     }
     
@@ -156,7 +180,7 @@ public class ArrowListener implements Listener
     if(enchs.size() > 0) for(EnchantmentPackage e : enchs)
     {
       if(event.isCancelled()) break;
-      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerShootBow' for '" + e.getEnchantment() + "'");
+      LoreEnchantments.debugLog("[ArrowListener] Calling Method 'onPlayerShootBow' for '" + e.getEnchantment().getName() + "'");
       ((OnPlayerShootBow) e.getEnchantment()).onPlayerShootBow(event, e.getEnchantment(), e.getData());
     }
   }
@@ -235,6 +259,48 @@ public class ArrowListener implements Listener
         ((OnPlayerArrowHitPlayer) e.getEnchantment()).onPlayerArrowHitPlayer(event, e.getEnchantment(), e.getData());
       }
     }
+  }
+  
+  public static void markLocation(JavaPlugin plugin, Location location, Effect effect, int ticks)
+  {
+    MarkerTask task = new MarkerTask();
+    task.location = location;
+    task.effect = effect;
+    task.remaining_ticks = ticks;
+    task.plugin = plugin;
+    task.run();
+  }
+  private static class MarkerTask extends BukkitRunnable
+  {
+    Location location;
+    Effect effect;
+    int remaining_ticks;
+    JavaPlugin plugin;
+    @Override
+    public void run()
+    {
+      if(remaining_ticks < 0) return;
+      remaining_ticks--;
+      location.getWorld().playEffect(location, effect, 0);
+      MarkerTask task = new MarkerTask();
+      task.location = this.location;
+      task.effect = this.effect;
+      task.remaining_ticks = this.remaining_ticks - 1;
+      task.plugin = this.plugin;
+      task.runTaskLater(plugin, 1);
+    }
+  }
+  @SuppressWarnings("unused")
+  private static boolean hasBlocksBetween(Location loc1, Location loc2)
+  {
+    Vector starting_vector = loc1.toVector();
+    Vector direction_vector = loc1.toVector().subtract(loc2.toVector());
+    BlockIterator iterator = new BlockIterator(loc1.getWorld(), starting_vector, direction_vector, 0, (int) Math.round(loc1.toVector().distance(loc2.toVector())));
+    while(iterator.hasNext())
+    {
+      if(iterator.next().getType().isSolid()) return true;
+    }
+    return false;
   }
   
 }
