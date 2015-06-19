@@ -26,12 +26,16 @@ public class ActionUtil
     DROP_ITEM               (null,                     false,  "Drop Item",                "DI"),
     SHIFT_DROP_ITEM         (null,                     true,   "Shift Drop Item",          "SDI"),
     SHOOT_BOW               (null,                     false,  "Shoot Bow",                "SB"),
+    SHOOT_BOW_ALL           (null,                     false,  "Shoot Bow All",            "SBA"),
     SHIFT_SHOOT_BOW         (null,                     true,   "Shift Shoot Bow",          "SSB"),
     ATTACK                  (null,                     false,  "Attack",                   "A"),
+    ATTACK_ALL              (null,                     true,   "Attack All",               "AA"),
     SHIFT_ATTACK            (null,                     true,   "Shift Attack",             "SA"),
     CONSUME                 (null,                     false,  "Consume",                  "C"),
+    CONSUME_ALL             (null,                     true,   "Consume All",              "CA"),
     SHIFT_CONSUME           (null,                     true,   "Shift Consume",            "SC"),
     BLOCK_BREAK             (null,                     false,  "Block Break",              "BB"),
+    BLOCK_BREAK_ALL         (null,                     false,  "Block Break All",          "BBA"),
     SHIFT_BLOCK_BREAK       (null,                     true,   "Shift Block Break",        "SBB");
     
     
@@ -78,6 +82,26 @@ public class ActionUtil
         if(type.equals(SHIFT_RIGHT_CLICK_BLOCK)) return true;
         if(type.equals(SHIFT_RIGHT_CLICK_AIR)) return true;
       }
+      if(this.equals(ActionType.ATTACK_ALL))
+      {
+        if(type.equals(ATTACK)) return true;
+        if(type.equals(SHIFT_ATTACK)) return true;
+      }
+      if(this.equals(ActionType.CONSUME_ALL))
+      {
+        if(type.equals(CONSUME)) return true;
+        if(type.equals(SHIFT_CONSUME)) return true;
+      }
+      if(this.equals(ActionType.SHOOT_BOW_ALL))
+      {
+        if(type.equals(SHOOT_BOW)) return true;
+        if(type.equals(SHIFT_SHOOT_BOW)) return true;
+      }
+      if(this.equals(ActionType.BLOCK_BREAK_ALL))
+      {
+        if(type.equals(BLOCK_BREAK)) return true;
+        if(type.equals(SHIFT_BLOCK_BREAK)) return true;
+      }
       return type.equals(this);
     }
     
@@ -104,12 +128,16 @@ public class ActionUtil
         case "DI":    return ActionType.DROP_ITEM;
         case "SDI":   return ActionType.SHIFT_DROP_ITEM;
         case "SB":    return ActionType.SHOOT_BOW;
+        case "SBA":   return ActionType.SHOOT_BOW;
         case "SSB":   return ActionType.SHIFT_SHOOT_BOW;
         case "A":     return ActionType.ATTACK;
+        case "AA":    return ActionType.ATTACK_ALL;
         case "SA":    return ActionType.SHIFT_ATTACK;
         case "C":     return ActionType.CONSUME;
+        case "CA":    return ActionType.CONSUME_ALL;
         case "SC":    return ActionType.SHIFT_CONSUME;
         case "BB":    return ActionType.BLOCK_BREAK;
+        case "BBA":   return ActionType.BLOCK_BREAK_ALL;
         case "SBB":   return ActionType.SHIFT_BLOCK_BREAK;
       }
       return null;
