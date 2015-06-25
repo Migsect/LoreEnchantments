@@ -104,41 +104,27 @@ public class ActionUtil
       }
       return type.equals(this);
     }
-    
-    public static ActionType getActionType(String short_hand)
+    public static ActionType getByString(String string)
     {
-      switch(short_hand)
+      ActionType a = null;
+      if(a == null) a = ActionType.getByShortHand(string);
+      if(a == null) a = ActionType.getByFriendlyName(string);
+      try{a = ActionType.valueOf(string);}catch(Exception e){}
+      return a;
+    }
+    public static ActionType getByShortHand(String short_hand)
+    {
+      for(ActionType a : ActionType.values())
       {
-        case "LC":    return ActionType.LEFT_CLICK;
-        case "SLC":   return ActionType.SHIFT_LEFT_CLICK;
-        case "RC":    return ActionType.RIGHT_CLICK;
-        case "SRC":   return ActionType.SHIFT_RIGHT_CLICK;
-        case "LCB":   return ActionType.LEFT_CLICK_BLOCK;
-        case "SLCB":  return ActionType.SHIFT_LEFT_CLICK_BLOCK;
-        case "RCB":   return ActionType.RIGHT_CLICK_BLOCK;
-        case "SRCB":  return ActionType.SHIFT_RIGHT_CLICK_BLOCK;
-        case "LCA":   return ActionType.LEFT_CLICK_AIR;
-        case "SLCA":  return ActionType.SHIFT_LEFT_CLICK_AIR;
-        case "RCA":   return ActionType.RIGHT_CLICK_AIR;
-        case "SRCA":  return ActionType.SHIFT_RIGHT_CLICK_AIR;
-        case "P":     return ActionType.PHYSICAL;
-        case "SP":    return ActionType.SHIFT_PHYSICAL;
-        case "OI":    return ActionType.OPEN_INVENTORY;
-        case "SOI":   return ActionType.SHIFT_OPEN_INVENTORY;
-        case "DI":    return ActionType.DROP_ITEM;
-        case "SDI":   return ActionType.SHIFT_DROP_ITEM;
-        case "SB":    return ActionType.SHOOT_BOW;
-        case "SBA":   return ActionType.SHOOT_BOW;
-        case "SSB":   return ActionType.SHIFT_SHOOT_BOW;
-        case "A":     return ActionType.ATTACK;
-        case "AA":    return ActionType.ATTACK_ALL;
-        case "SA":    return ActionType.SHIFT_ATTACK;
-        case "C":     return ActionType.CONSUME;
-        case "CA":    return ActionType.CONSUME_ALL;
-        case "SC":    return ActionType.SHIFT_CONSUME;
-        case "BB":    return ActionType.BLOCK_BREAK;
-        case "BBA":   return ActionType.BLOCK_BREAK_ALL;
-        case "SBB":   return ActionType.SHIFT_BLOCK_BREAK;
+        if(a.getShortHandName().toLowerCase().equals(short_hand.toLowerCase())) return a;
+      }
+      return null;
+    }
+    public static ActionType getByFriendlyName(String friendly_name)
+    {
+      for(ActionType a : ActionType.values())
+      {
+        if(a.getFriendlyName().toLowerCase().equals(friendly_name.toLowerCase())) return a;
       }
       return null;
     }

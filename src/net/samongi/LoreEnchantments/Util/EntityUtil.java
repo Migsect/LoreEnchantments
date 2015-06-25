@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.samongi.LoreEnchantments.LoreEnchantments;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
@@ -23,10 +24,12 @@ public class EntityUtil
       if(e == null) return null;
       LoreEnchantments.debugLog("Found Nearest entity: '" + e.getType() + "' with distance: " + e.getLocation().distance(entity.getLocation()));
       
-      double degree_sqr = Math.pow(arc_length,2)/e.getLocation().distanceSquared(entity.getLocation());
-      double x = e.getLocation().getX() - entity.getLocation().getX();
-      double y = e.getLocation().getY() - entity.getLocation().getY();
-      double z = e.getLocation().getZ() - entity.getLocation().getZ();
+      Location e_loc = e.getLocation();
+      Location e_adj = new Location(e_loc.getWorld(), e_loc.getX(), e_loc.getY(), e_loc.getZ());
+      double degree_sqr = Math.pow(arc_length,2) / (e.getLocation().distanceSquared(entity.getLocation()));
+      double x = e_adj.getX() - entity.getLocation().getX();
+      double y = e_adj.getY() - entity.getLocation().getY();
+      double z = e_adj.getZ() - entity.getLocation().getZ();
       
       Vector v = new Vector(x, y, z);
       double degree_comp = Math.pow(entity.getLocation().getDirection().angle(v),2);
